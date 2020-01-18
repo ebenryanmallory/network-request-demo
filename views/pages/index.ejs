@@ -41,12 +41,12 @@
     <hr>
   </div>
   <div class="container">
-    <div class="text-center" id="XMLHttpRequest-HTML-container">
+    <div class="text-center" id="postForm-HTML-container">
       <p>Update this HTML block by clicking below</p>
     </div>
-    <form>
+    <form id="postForm">
       <input id="colorpicker" type="color" name="color" value="#c1b872">
-      <input type="text" name="name" value="" placeholder="Your name here">
+      <input type="text" name="name" value="" placeholder="Type your name here">
       <input type="submit">
     </form>
     <br><br>
@@ -87,7 +87,20 @@
     };
     xhr.timeout = 4000;
   };
-
+// form submit data with async fetch request
+// var postForm = document.querySelector('#postForm');
+postForm.onsubmit = async (defaultEvent) => {
+  defaultEvent.preventDefault();
+    var formJSONresponse = await fetch('/api/form', {
+      method: 'POST',
+      body: new FormData(postForm)
+    });
+    var returnedJSON = await formJSONresponse.json();
+    var cardResultSelection = document.querySelector('#postForm-HTML-container');
+      cardResultSelection.innerHTML = returnedJSON[0].fullwidthCard;
+    document.querySelector('#postForm-HTML-container div.card').setAttribute("style", `background:${returnedJSON[1].color}`);
+    document.querySelector('#postForm-HTML-container div.card').innerText = `Hello, ${returnedJSON[1].name}`;
+  };
 
 </script>
 </html>
